@@ -1,0 +1,60 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-xampp
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: foyer
+    networks:
+      - foyer-network
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  discovery-server:
+    build: ./Discovery-server
+    container_name: discovery-server
+    ports:
+      - "8095:8095"
+    networks:
+      - foyer-network
+    restart: unless-stopped
+
+  api-gateway:
+    build: ./Api-Gateway
+    container_name: api-gateway
+    ports:
+      - "8090:8090"
+    depends_on:
+      - discovery-server
+    networks:
+      - foyer-network
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8095/eureka
+
+  foyer:
+    build: ./foyer
+    container_name: foyer-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - discovery-server
+      - mysql
+    networks:
+      - foyer-network
+    restart: unless-stopped
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8095/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/foyer?createDatabaseIfNotExist=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+volumes:
+  mysql_data:
+
+networks:
+  foyer-network:
+    driver: bridge
