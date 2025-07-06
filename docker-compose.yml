@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   discovery-server:
-    image: attiaimeed/discovery-server:${BUILD_TAG:-latest}
+    image: attiaimeed/discovery-server:${BUILD_TAG}-${GIT_SHORT_HASH:-latest}
     container_name: discovery-server
     ports:
       - "8095:8095"
@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
 
   api-gateway:
-    image: attiaimeed/api-gateway:${BUILD_TAG:-latest}
+    image: attiaimeed/api-gateway:${BUILD_TAG}-${GIT_SHORT_HASH:-latest}
     container_name: api-gateway
     ports:
       - "8090:8090"
@@ -50,7 +50,7 @@ services:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8095/eureka
 
   foyer-service:
-    image: attiaimeed/foyer-service:${BUILD_TAG:-latest}
+    image: attiaimeed/foyer-service:${BUILD_TAG}-${GIT_SHORT_HASH:-latest}
     container_name: foyer-service
     ports:
       - "8086:8086"
