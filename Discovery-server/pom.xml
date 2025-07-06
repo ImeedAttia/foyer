@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>tn.esprit.spring</groupId>
 	<artifactId>Discovery-server</artifactId>
-	<version>1.0.0</version>
+	<version>2.1.0-SNAPSHOT</version>
 	<name>Discovery-server</name>
 	<description>Discovery-server</description>
 	<url/>
