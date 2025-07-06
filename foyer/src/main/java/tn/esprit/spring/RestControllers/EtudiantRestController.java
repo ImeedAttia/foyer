@@ -1,6 +1,8 @@
 package tn.esprit.spring.RestControllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.spring.DAO.Entities.Etudiant;
 import tn.esprit.spring.Services.Etudiant.IEtudiantService;
@@ -14,8 +16,13 @@ public class EtudiantRestController {
     IEtudiantService service;
 
     @PostMapping("addOrUpdate")
-    Etudiant addOrUpdate(@RequestBody Etudiant e) {
-        return service.addOrUpdate(e);
+    ResponseEntity<Etudiant> addOrUpdate(@RequestBody Etudiant e) {
+        try {
+            Etudiant saved = service.addOrUpdate(e);
+            return ResponseEntity.ok(saved);
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("findAll")
@@ -39,7 +46,7 @@ public class EtudiantRestController {
     }
 
     @GetMapping("selectJPQL")
-    List<Etudiant> selectJPQL(@RequestParam String nom){
+    List<Etudiant> selectJPQL(@RequestParam String nom) {
         return service.selectJPQL(nom);
     }
 }
